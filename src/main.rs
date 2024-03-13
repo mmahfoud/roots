@@ -42,7 +42,7 @@ fn next(x: f64, n: u32, p: f64) -> f64 {
 /// let n: u32 = 4;
 /// let answer = crate::root(x, n);
 ///
-/// assert!((answer - 2.0).abs() >= EPSILON);
+/// assert!((answer - 2.0).abs() >= crate::EPSILON);
 /// ```
 fn root(x: f64, n: u32) -> f64 {
     // return 0 for values of x too small
