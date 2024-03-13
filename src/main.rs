@@ -1,4 +1,15 @@
-fn power(x: f64, n: usize) -> f64 {
+/// calculates the result of raising an f64 number to an integer u32 power.
+///
+/// # Examples
+///
+/// ```
+/// let x = 2.0f64;
+/// let n = 4u32;
+/// let answer = crate::power(x, n);
+///
+/// assert_eq!(16.0f64, answer);
+/// ```
+fn power(x: f64, n: u32) -> f64 {
     let mut result = 1f64;
     let mut y = x;
     let mut count = n;
@@ -12,36 +23,56 @@ fn power(x: f64, n: usize) -> f64 {
     result
 }
 
+/// Approximation order
 const EPSILON: f64 = 1e-20;
-const MAX_ITERATIONS: usize = 1_000_000;
+/// Maximum number of iterations
+const MAX_ITERATIONS: u32 = 1_000_000;
 
-fn next(x: f64, n: usize, p: f64) -> f64 {
+fn next(x: f64, n: u32, p: f64) -> f64 {
+    // Un+1 = Un - (Un^n - x)/(n.Un^(n-1))
     p - ((power(p, n) - x) / ((n as f64) * power(p, n - 1)))
 }
 
-fn root(x: f64, n: usize) -> f64 {
+/// calculates an approximate value of the n-th root of an f64 number.
+///
+/// # Examples
+///
+/// ```
+/// let x: f64 = 16.0;
+/// let n: u32 = 4;
+/// let answer = crate::root(x, n);
+///
+/// assert!((answer - 2.0).abs() >= EPSILON);
+/// ```
+fn root(x: f64, n: u32) -> f64 {
+    // return 0 for values of x too small
     if x.abs() <= EPSILON {
         return 0.0;
     }
+
+    // start from +1 or -1 (based on the sign of x)
     let mut p = if x >= 0.0 { 1.0 } else { -1.0 };
+
+    // calculate next value
     let mut u = next(x, n, p);
-    let mut i: usize = 1;
+
+    let mut i: u32 = 1;
     while (((u - p) / p).abs() >= EPSILON) && (i <= MAX_ITERATIONS) {
-        //println!("{}: {} - {} = {}", i, u, p, (u - p).abs());
         p = u;
         u = next(x, n, p);
         i += 1;
     }
-    //println!("---------");
     u
 }
 
+/// Represents a test case to be checked. it contains a number (expected_root) and a vector of its powers starting from its square.
 struct TestCase {
     values: Vec<f64>,
     expected_root: f64,
 }
 
 fn main() {
+    // initialize test case with numbers between 0 and 1000 with their powers from 2 to 10.
     let mut test_cases: Vec<TestCase> = (0..=1000)
         .map(|x| TestCase {
             expected_root: x as f64,
@@ -49,21 +80,23 @@ fn main() {
         })
         .collect();
 
+    // add a test case for square root of 8
     test_cases.push(TestCase {
         expected_root: 2.82842712474619,
         values: vec![8.0],
     });
 
+    // perform calculations on each test case
     for test in test_cases {
-        let roots: Vec<(f64, usize, f64, f64, bool)> = test
+        let roots: Vec<(f64, u32, f64, f64, bool)> = test
             .values
             .iter()
             .enumerate()
             .map(|(i, v)| {
-                let r = root(*v, i + 2);
+                let r = root(*v, (i as u32) + 2);
                 (
                     test.expected_root,
-                    i + 2,
+                    (i as u32) + 2,
                     *v,
                     r,
                     (r - test.expected_root).abs() < EPSILON,
@@ -71,6 +104,7 @@ fn main() {
             })
             .collect();
 
+        // print test results for this test case
         for (x, n, v, r, b) in roots {
             println!("{}: {}v{} = {} => {}", x, n, v, r, b);
         }
