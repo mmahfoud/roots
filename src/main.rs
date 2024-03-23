@@ -1,14 +1,20 @@
-/// calculates the result of raising an f64 number to an integer u32 power.
-///
-/// # Examples
-///
-/// ```
-/// let x = 2.0f64;
-/// let n = 4u32;
-/// let answer = crate::power(x, n);
-///
-/// assert_eq!(16.0f64, answer);
-/// ```
+use crate::polynomials::Polynom;
+
+pub mod polynomials;
+
+/**
+calculates the result of raising an f64 number to an integer u32 power.
+
+# Examples
+
+```
+let x = 2.0f64;
+let n = 4u32;
+let answer = crate::power(x, n);
+
+assert_eq!(16.0f64, answer);
+```
+*/
 fn power(x: f64, n: u32) -> f64 {
     let mut result = 1f64;
     let mut y = x;
@@ -29,22 +35,35 @@ const EPSILON: f64 = 1e-20;
 /// Maximum number of iterations
 const MAX_ITERATIONS: u32 = 1_000_000;
 
-fn basic_next(x: f64, n: u32, p: f64) -> f64 {
+
+/**
+calculates the next term of Newton method serie (for Polynom P(X) = X^n - v
+
+Description here
+and here.
+
+* `v` the v in P(X) = X^n - v
+* `n` the Polynom degree n in P(X) = X^n - v
+* `p` the previous term
+*/
+fn basic_next(v: f64, n: u32, p: f64) -> f64 {
     // Un+1 = Un - (Un^n - x)/(n.Un^(n-1))
-    p - ((power(p, n) - x) / ((n as f64) * power(p, n - 1)))
+    p - ((power(p, n) - v) / ((n as f64) * power(p, n - 1)))
 }
 
-/// calculates an approximate value of the n-th root of an f64 number.
-///
-/// # Examples
-///
-/// ```
-/// let x: f64 = 16.0;
-/// let n: u32 = 4;
-/// let answer = crate::root(x, n);
-///
-/// assert!((answer - 2.0).abs() >= crate::EPSILON);
-/// ```
+/**
+calculates an approximate value of the n-th root of an f64 number.
+
+# Examples
+
+```
+let x: f64 = 16.0;
+let n: u32 = 4;
+let answer = crate::root(x, n);
+
+assert!((answer - 2.0).abs() >= crate::EPSILON);
+```
+*/
 fn root<F>(x: f64, n: u32, next: F) -> f64
 where
     F: Fn((f64, u32, f64)) -> f64,
@@ -78,11 +97,13 @@ fn main() {
         root(81.0, 4, |(a, b, c)| (((b as f64) - 1.0) * power(c, b) + a)
             / ((b as f64) * power(c, b - 1)))
     );
+
+    println!("X^2+1 * X-1 = {}", Polynom::initialize(vec![1.0, 0.0, 1.0]) * Polynom::initialize(vec![-1.0, 1.0]));
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::*;
+    use super::*;
 
     /// Represents a test case to be checked. it contains a number (expected_root) and a vector of its powers starting from its square.
     struct TestCase {
