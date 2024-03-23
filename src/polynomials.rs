@@ -1,4 +1,4 @@
-use std::{fmt, ops, string};
+use std::{fmt, ops};
 
 #[derive(Debug, PartialEq)]
 pub struct Polynom {
@@ -72,7 +72,7 @@ impl fmt::Display for Polynom {
                 } else if x < 0.0 {
                     res.push('-');
                 }
-                if x != 1.0 {
+                if x.abs() != 1.0 || i == 0 {
                     res.push_str(x.abs().to_string().as_str());
                 }
                 if i > 0 {
@@ -196,5 +196,7 @@ mod tests {
         assert_eq!(format!("{}", Polynom::zero()), "0");
 
         assert_eq!(format!("{}", Polynom::single(2)), "X^2");
+
+        assert_eq!(format!("{}", Polynom::single(2).by(2.0).plus(-1.0).by(-0.5)), "-0.5X^2+0.5X+0.5");
     }
 }
