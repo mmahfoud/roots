@@ -116,14 +116,14 @@ mod tests {
         for test in test_cases {
             let roots: Vec<(f64, u32, f64, f64, bool)> = test
                 .values
-                .iter()
+                .into_iter()
                 .enumerate()
                 .map(|(i, v)| {
-                    let r = root(*v, (i as u32) + 2, |(a, b, c)| basic_next(a, b, c));
+                    let r = root(v, (i as u32) + 2, |(a, b, c)| basic_next(a, b, c));
                     (
                         test.expected_root,
                         (i as u32) + 2,
-                        *v,
+                        v,
                         r,
                         (r - test.expected_root).abs() < EPSILON,
                     )
