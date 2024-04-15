@@ -35,7 +35,6 @@ const EPSILON: f64 = 1e-20;
 /// Maximum number of iterations
 const MAX_ITERATIONS: u32 = 1_000_000;
 
-
 /**
 calculates the next term of Newton method serie (for Polynom P(X) = X^n - v
 
@@ -98,7 +97,10 @@ fn main() {
             / ((b as f64) * power(c, b - 1)))
     );
 
-    println!("X^2+1 * X-1 = {}", Polynom::initialize(vec![1.0, 0.0, 1.0]) * Polynom::initialize(vec![-1.0, 1.0]));
+    println!(
+        "X^2+1 * X-1 = {}",
+        Polynom::initialize(vec![1.0, 0.0, 1.0]) * Polynom::initialize(vec![-1.0, 1.0])
+    );
 }
 
 #[cfg(test)]
@@ -112,7 +114,7 @@ mod tests {
     }
 
     #[test]
-    fn it_works() {
+    fn nth_square_for_x_to_the_power_n_should_be_x() {
         // initialize test case with numbers between 0 and 1000 with their powers from 2 to 10.
         let mut test_cases: Vec<TestCase> = (0..=10)
             .map(|x| TestCase {
