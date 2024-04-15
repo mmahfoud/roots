@@ -38,9 +38,6 @@ const MAX_ITERATIONS: u32 = 1_000_000;
 /**
 calculates the next term of Newton method serie (for Polynom P(X) = X^n - v
 
-Description here
-and here.
-
 * `v` the v in P(X) = X^n - v
 * `n` the Polynom degree n in P(X) = X^n - v
 * `p` the previous term
